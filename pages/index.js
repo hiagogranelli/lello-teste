@@ -1,10 +1,10 @@
-export default function Home({avatars}) {
+export default function Home({pokemons}) {
   return (
     <div>
-      {avatars.map(avatar => {
+      {pokemons.map(avatar => {
         return (
-          <ul key={avatar._id}>
-            <a href={avatar.name.toLowerCase().replace()}>
+          <ul key={avatar.name}>
+            <a href={avatar.name.toLowerCase()}>
               <li>{avatar.name}</li>
             </a> 
           </ul>
@@ -15,12 +15,12 @@ export default function Home({avatars}) {
 }
 
 export const getStaticProps = async () => {
-  const response = await fetch('https://last-airbender-api.herokuapp.com/api/v1/characters');
+  const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20');
   const data = await response.json();
 
   return {
     props: {
-      avatars: data,
+      pokemons: data.results,
     }
   }
 };

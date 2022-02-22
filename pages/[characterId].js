@@ -1,30 +1,36 @@
+import { useRouter } from 'next/router';
+
 export default function Character({character}) {
+    const { isFallback } = useRouter();
+
+    if (isFallback) {
+      return <p>Carregando...</p>;
+    }
+    
     return (
       <div>
-        <img src={character.photoUrl} alt="Foto do personagem" />
         <h1>{character.name}</h1>
-        <p>{character.affiliation}</p>
+        <img src={character.sprites.front_default} />
       </div>
     )
   }
   
   export const getStaticProps = async ({params}) => {
-    const response = await fetch(`https://last-airbender-api.herokuapp.com/api/v1/characters?name=${params.characterId.replace(/\-/g, "+")}`);
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${params.characterId}`);
     const data = await response.json();
   
     return {
       props: {
-        character: data[0],
+        character: data,
       }
     }
   };
 
   export const getStaticPaths = async () => {
-    const response = await fetch('https://last-airbender-api.herokuapp.com/api/v1/characters');
+    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20');
     const data = await response.json()
-    console.log(data)
     return {
-      paths: data.map(character => {
+      paths: data.results.map(character => {
         const characterId = character.name.toLowerCase();
         return {
           params: {
